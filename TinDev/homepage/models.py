@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Candidate(models.Model):
     name = models.CharField(max_length=200)
@@ -6,5 +7,10 @@ class Candidate(models.Model):
     zipcode = models.PositiveIntegerField()
     skills = models.CharField(max_length=200)
     experience = models.PositiveIntegerField()
-    username = models.CharField(max_length=25)
-    password = models.CharField(max_length=25)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
+class Recruiter(models.Model):
+    name = models.CharField(max_length=200)
+    company = models.CharField(max_length=50)
+    zipcode = models.PositiveIntegerField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
