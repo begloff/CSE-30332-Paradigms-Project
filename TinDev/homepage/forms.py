@@ -4,6 +4,6 @@ from .models import Candidate
 class CandidateForm(ModelForm):
     class Meta:
         model = Candidate
-        fields = '__all__'
+        fields = "__all__"
 
     

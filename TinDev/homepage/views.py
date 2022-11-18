@@ -35,5 +35,11 @@ def registerPage(request):
 
 def profileRegistration(request):
     form = CandidateForm()
+
+    if request.method == "POST":
+        form = CandidateForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect('/homepage/')
     context = {'form': form}
     return render(request, 'profile.html', context)
