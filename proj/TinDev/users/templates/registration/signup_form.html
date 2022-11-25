@@ -1,0 +1,8 @@
+<h2>Sign Up as a {{user_type}}</h2>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{next}}">
+    {{form}}
+    <button type="submit">Sign Up</button>
+</form>
