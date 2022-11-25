@@ -37,6 +37,8 @@ class CandidateSignUpForm(UserCreationForm):
         user = super().save(commit=False)
         user.is_candidate = True
         user.save()
+    
+
         candidate = Candidate.objects.create(user=user)
         candidate.name = self.cleaned_data.get('name')
         candidate.bio = self.cleaned_data.get('bio')
@@ -45,6 +47,7 @@ class CandidateSignUpForm(UserCreationForm):
         candidate.github = self.cleaned_data.get('github')
         candidate.experience = self.cleaned_data.get('experience')
         candidate.education = self.cleaned_data.get('education')
+        candidate.save()
 
         return user
 
