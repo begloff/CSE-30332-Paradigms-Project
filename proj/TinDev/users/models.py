@@ -22,7 +22,7 @@ class Candidate(models.Model):
 class Recruiter(models.Model):
     name = models.CharField(max_length=200)
     company = models.CharField(max_length=50)
-    zipcode = models.PositiveIntegerField()
+    zipcode = models.PositiveIntegerField(default=0)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):

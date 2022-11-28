@@ -5,7 +5,14 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+  {% if user.is_recruiter %}
+    <p>Welcome Recruiter</p>
+  {% else %}
+    <p>Welcome Candidate</p>
+  {% endif %}
   Hi {{ user.username }}!
+  {{ user.is_candidate }}
+  <hr>
   <a href="accounts/logout">Log Out</a>
   <a href="info/{{user.id}}">info</a>
 {% else %}

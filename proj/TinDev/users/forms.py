@@ -10,7 +10,8 @@ class CandidateSignUpForm(UserCreationForm):
         max_length=200
     )
     bio = forms.CharField(
-        max_length=500
+        max_length=500,
+        required=False,
     )
     zip = forms.IntegerField(
         required=True
@@ -20,13 +21,15 @@ class CandidateSignUpForm(UserCreationForm):
         max_length=200        
     )
     github = forms.CharField(
-        max_length=100        
+        max_length=100,
+        required=False,        
     )
     experience = forms.IntegerField(
         required=True       
     )
     education = forms.CharField(
-        max_length=100        
+        max_length=100,
+        required=False,        
     )
 
     class Meta(UserCreationForm.Meta):
@@ -48,6 +51,39 @@ class CandidateSignUpForm(UserCreationForm):
         candidate.experience = self.cleaned_data.get('experience')
         candidate.education = self.cleaned_data.get('education')
         candidate.save()
+
+        return user
+
+
+class RecruiterSignUpForm(UserCreationForm):
+    name = forms.CharField(
+        required=True,
+        max_length=200
+    )
+    company = forms.CharField(
+        max_length=500,
+        required=True,
+    )
+    zip = forms.IntegerField(
+        required=True
+    )
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+    
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_recruiter = True
+        user.save()
+    
+
+        recruiter = Recruiter.objects.create(user=user)
+        recruiter.name = self.cleaned_data.get('name')
+        recruiter.bio = self.cleaned_data.get('company')
+        recruiter.zip = self.cleaned_data.get('zip')
+
+        recruiter.save()
 
         return user
 

@@ -1,8 +1,30 @@
-<h2>Sign Up as a {{user_type}}</h2>
+{% load static %}
 
-<form method="post" novalidate>
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{next}}">
-    {{form}}
-    <button type="submit">Sign Up</button>
-</form>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h2>Sign Up as a {{user_type}}</h2>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{next}}">
+        {% for field in form %}
+            <div style="margin-top: 20px;">
+            {{ field.label }}
+            {{ field }}
+            {% if field.field.required %}
+            <span> - required</span>
+            {% endif %}
+            
+            </div>
+        {% endfor %}
+        <button type="submit">Sign Up</button>
+    </form>
+</body>
+</html>
