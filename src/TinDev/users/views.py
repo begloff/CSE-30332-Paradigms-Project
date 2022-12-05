@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from .models import User, Post
+from .models import User, Post, Candidate
 from .forms import CandidateSignUpForm, RecruiterSignUpForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.db.models import Q
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -130,3 +131,18 @@ class KeywordSearchResults(ListView):
 
 def home(request):
     return render(request, 'home.html')
+
+def addInterest(request, post_id):
+
+    #Can hopefully just Use user rather than candidate
+    post = get_object_or_404(Post,pk=post_id)
+
+    if request.user.is_authenticated:
+        user_id = request.user.id
+
+    post.candidates.add(user_id)
+
+    post.save()
+
+    return render(request, 'home.html')
+

@@ -29,8 +29,9 @@ class Recruiter(models.Model):
     def __str__(self):
         return self.user.username
 
-# Include User? May Mess with creating and editing
+# Issue --> Need a way to 
 class Post(models.Model):
+    candidates = models.ManyToManyField(Candidate)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     position_title = models.CharField(max_length=100,default='')
     job_type = models.CharField(max_length=100,default='')

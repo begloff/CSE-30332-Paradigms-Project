@@ -27,7 +27,7 @@
                 {% else %}
                     <p>Status: Not Active</p>
                 {% endif %}
-                <button style="background-color: green"><a href="/">Interested</a></button>
+                <button style="background-color: green"><a href="{% url 'interests' post.id %}">Interested</a></button>
                 <button style="background-color: red"><a href="/">Not Interested</a></button>
             </li>
             {% endfor %}
