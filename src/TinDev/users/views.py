@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from .models import User, Post
+from .models import User, Post, Candidate
 from .forms import CandidateSignUpForm, RecruiterSignUpForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.db.models import Q
+
 
 # Create your views here.
 
@@ -132,4 +133,8 @@ def home(request):
     return render(request, 'home.html')
 
 def addInterest(request, post_id):
-    print(request, post_id)
+    post = get_object_or_404(Post, pk=post_id)
+    candidate = get_object_or_404(Candidate, pk=request.user)
+    post.interests.add(candidate)
+    post.save()
+    return redirect("/candidate/post/view/all")
