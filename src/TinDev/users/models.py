@@ -7,7 +7,7 @@ class User(AbstractUser):
     is_recruiter = models.BooleanField(default = False)
 
 class Candidate(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     name = models.CharField(max_length=200, default='')
     bio = models.CharField(max_length=500, default='')
     zipcode = models.PositiveIntegerField(default=0)
@@ -24,7 +24,7 @@ class Recruiter(models.Model):
     name = models.CharField(max_length=200,default='')
     company = models.CharField(max_length=50,default='')
     zipcode = models.PositiveIntegerField(default=0)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     def __str__(self):
         return self.user.username
@@ -32,6 +32,7 @@ class Recruiter(models.Model):
 # Include User? May Mess with creating and editing
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    interests = models.ManyToManyField(Candidate)
     position_title = models.CharField(max_length=100,default='')
     job_type = models.CharField(max_length=100,default='')
     job_city = models.CharField(max_length=100,default='')

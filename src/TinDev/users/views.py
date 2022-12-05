@@ -130,3 +130,6 @@ class KeywordSearchResults(ListView):
 
 def home(request):
     return render(request, 'home.html')
+
+def addInterest(request, post_id):
+    print(request, post_id)
