@@ -45,3 +45,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f'Post for {self.position_title} made by {self.user.username}'
+
+class Offer(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    salary = models.IntegerField(default=0)
+    duedate = models.DateField(default=datetime.date.today)

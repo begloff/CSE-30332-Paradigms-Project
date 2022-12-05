@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from .models import User, Post, Candidate
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
+from .models import User, Post, Candidate, Offer
 from .forms import CandidateSignUpForm, RecruiterSignUpForm
 from django.contrib.auth import login
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Count
 
 
 # Create your views here.
@@ -48,6 +48,7 @@ class CreatePostView(CreateView):
         post.save()
         messages.success(self.request, 'The post was created successfully.')
         return redirect('/recruiter/post/view/all')
+
 
 class PostIndexViewAll(ListView):
     model = Post
@@ -128,6 +129,31 @@ class KeywordSearchResults(ListView):
         query = self.request.GET.get("q")
         return Post.objects.filter(Q(description__icontains=query))
 
+class PostIndexViewInterest(ListView):
+    model = Post
+    template_name = 'recruiter/view_posts.html'
+    context_object_name = 'latest_post_list'
+
+    def get_queryset(self, *args, **kwargs):
+        return Post.objects.annotate(num_candidates=Count('interests')).filter(user=self.request.user, num_candidates__gt=0).order_by('-is_active','-expiration_date')
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'recruiter/post_details.html'
+    context_object_name = 'post'
+
+class CreateOffer(CreateView):
+    model = Offer
+    fields = ('salary', 'duedate')
+    template_name = 'recruiter/create_offer.html'
+
+    def form_valid(self, form):
+        offer = form.save(commit = False)
+        offer.candidate = get_object_or_404(Candidate, pk=self.request.GET.get('user_id'))
+        offer.post = get_object_or_404(Post, pk=self.request.GET.get('post_id'))
+        offer.save()
+        messages.success(self.request, 'The offer was created successfully.')
+        return redirect('/recruiter/post/view/all')
 
 def home(request):
     return render(request, 'home.html')
@@ -136,5 +162,12 @@ def addInterest(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     candidate = get_object_or_404(Candidate, pk=request.user)
     post.interests.add(candidate)
+    post.save()
+    return redirect("/candidate/post/view/all")
+
+def removeInterest(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    candidate = get_object_or_404(Candidate, pk=request.user)
+    post.interests.remove(candidate)
     post.save()
     return redirect("/candidate/post/view/all")

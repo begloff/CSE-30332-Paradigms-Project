@@ -28,8 +28,8 @@
                     <p>Status: Not Active</p>
                 {% endif %}
                 <button><a href="/recruiter/post/update/{{post.id}}">Update Post</a></button>
-                <button style="background-color: red"><a href="/post/delete/{{post.id}}">Delete Post</a></button>
-                <button style="background-color: green"><a href="/">Make Offer</a></button>
+                <button style="background-color: red"><a href="/recruiter/post/delete/{{post.id}}">Delete Post</a></button>
+                <button style="background-color: green"><a href="/recruiter/post/view/{{post.id}}">Make Offer</a></button>
             </li>
             {% endfor %}
         </ul>
@@ -41,7 +41,7 @@
     <button><a href="/recruiter/post/view/all">All Posts</a></button>
     <button><a href="/recruiter/post/view/active">Active Posts</a></button>
     <button><a href="/recruiter/post/view/inactive">Inactive Posts</a></button>
-    <button><a>Interested Posts</a></button>
+    <button><a href="/recruiter/post/view/interest">Interested Posts</a></button>
 
 </body>
 </html>

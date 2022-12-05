@@ -1,0 +1,22 @@
+{% load static %} <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+
+    <h3>Details for {{post.position_title}}</h3>
+    <button><a href="/">Return Home</a></button>
+
+    {% for candidate in post.interests.all %}
+        <p> {{candidate.user.id}}</p>
+        <button><a href="/recruiter/post/offer/create?post_id={{post.id}}&user_id={{candidate.user.id}}">Make Offer</a></button>
+    {% endfor %}
+
+
+</body>
+</html>
