@@ -17,7 +17,7 @@ from django.urls import path, include
 from django.contrib import admin
 from django.contrib.auth import logout
 
-from users.views import PostUpdateView, PostDeleteView, PostIndexViewAll, PostIndexViewActive, PostIndexViewInactive, CandidateSignUpView, RecruiterSignUpView, home, CreatePostView
+from users.views import KeywordSearchResults,LocationSearchResults, CandidatePostIndexViewActive, CandidatePostIndexViewInactive, CandidatePostIndexViewAll, PostUpdateView, PostDeleteView, PostIndexViewAll, PostIndexViewActive, PostIndexViewInactive, CandidateSignUpView, RecruiterSignUpView, home, CreatePostView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -25,10 +25,15 @@ urlpatterns = [
     path('', home, name="home"),
     path('accounts/signup/candidate', CandidateSignUpView.as_view(), name='candidate_signup'),
     path('accounts/signup/recruiter', RecruiterSignUpView.as_view(), name='recruiter_signup'),
-    path('post/create', CreatePostView.as_view(), name='post_create'),
-    path('post/view/all', PostIndexViewAll.as_view(), name='post_view_all'),
-    path('post/view/active', PostIndexViewActive.as_view(), name='post_view_active'),
-    path('post/view/inactive', PostIndexViewInactive.as_view(), name='post_view_inactive'),
-    path('post/update/<int:pk>', PostUpdateView.as_view(), name='post_update'),
-    path('post/delete/<int:pk>', PostDeleteView.as_view(), name='post_delete'),
+    path('recruiter/post/create', CreatePostView.as_view(), name='recruiter_post_create'),
+    path('recruiter/post/view/all', PostIndexViewAll.as_view(), name='recruiter_post_view_all'),
+    path('recruiter/post/view/active', PostIndexViewActive.as_view(), name='recruiter_post_view_active'),
+    path('recruiter/post/view/inactive', PostIndexViewInactive.as_view(), name='recruiter_post_view_inactive'),
+    path('recruiter/post/update/<int:pk>', PostUpdateView.as_view(), name='recruiter_post_update'),
+    path('recruiter/post/delete/<int:pk>', PostDeleteView.as_view(), name='recruiter_post_delete'),
+    path('candidate/post/view/all', CandidatePostIndexViewAll.as_view(), name='candidate_post_view_all'),
+    path('candidate/post/view/active', CandidatePostIndexViewActive.as_view(), name='candidate_post_view_active'),
+    path('candidate/post/view/inactive', CandidatePostIndexViewInactive.as_view(), name='candidate_post_view_inactive'),
+    path('candidate/post/location/search', LocationSearchResults.as_view(), name='search_results_location'),
+    path('candidate/post/keyword/search', KeywordSearchResults.as_view(), name='search_results_keyword'),
 ]

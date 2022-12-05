@@ -37,6 +37,7 @@ class Post(models.Model):
     job_city = models.CharField(max_length=100,default='')
     job_state = models.CharField(max_length=100,default='')
     skills = models.CharField(max_length=100,default='')
+    description = models.CharField(max_length=500,default='')
     company = models.CharField(max_length=100,default='')
     expiration_date = models.DateField(default=datetime.date.today)
     is_active = models.BooleanField(default = False)

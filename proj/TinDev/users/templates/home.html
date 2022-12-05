@@ -18,11 +18,11 @@
 <h3>Hi {{ user.username }}!</h3>
     {% if user.is_candidate %}
         <h2>Hello Candidate!</h2>
-        <button><a href="">View Job Posts</a></button>
+        <button><a href="/candidate/post/view/all">View Job Posts</a></button>
     {% else %}
         <h2>Recruiter Portal</h2>
-        <button><a href="post/create">Create Post</a></button>
-        <button><a href="post/view/all">View Posts</a></button>
+        <button><a href="recruiter/post/create">Create Post</a></button>
+        <button><a href="recruiter/post/view/all">View Posts</a></button>
     {% endif %}
     <hr>
     <button><a href="accounts/logout">Log Out</a></button>
