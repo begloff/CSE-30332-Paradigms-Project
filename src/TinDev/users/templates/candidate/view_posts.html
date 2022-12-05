@@ -1,0 +1,56 @@
+{% load static %}<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+
+    <h3>Job Posts</h3>
+    <button><a href="/">Return Home</a></button>
+
+    {% if latest_post_list %}
+
+        <ul>
+            {% for post in latest_post_list %}
+
+            <li>
+                <!-- Link to detail view of post -->
+                <p>Position Title: {{ post.position_title }}</p>
+                <p>Company: {{ post.company }}</p>
+                <p>Job Type: {{ post.job_type }}</p>
+                {% if post.is_active %}
+                    <p>Status: Active</p>
+                {% else %}
+                    <p>Status: Not Active</p>
+                {% endif %}
+                <button style="background-color: green"><a href="/">Interested</a></button>
+                <button style="background-color: red"><a href="/">Not Interested</a></button>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p> No Posts Available</p>
+
+    {% endif %}
+
+    <button style="margin-bottom: 30px;"><a href="/candidate/post/view/all">All Posts</a></button>
+    <button style="margin-bottom: 30px;"><a href="/candidate/post/view/active">Active Posts</a></button>
+    <button style="margin-bottom: 30px;"><a href="/candidate/post/view/inactive">Inactive Posts</a></button>
+
+    <form method="get" action="{% url 'search_results_location' %}">
+        <input type="text" name="q" placeholder="Location Search">
+    </form>
+
+    <form method="get" action="{% url 'search_results_keyword' %}">
+        <input type="text" name="q" placeholder="Keyword Search">
+    </form>
+
+
+    <button><a>Interested Posts</a></button>
+    
+</body>
+</html>

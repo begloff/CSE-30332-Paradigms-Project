@@ -1,0 +1,45 @@
+{% load static %}<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    <title>Document</title>
+</head>
+<body>
+    <h1>Welcome to TinDev!</h1>
+    <div>
+        <img src=" {% static 'img/TinDev.jpg' %}" alt="">
+    </div>
+
+{% if user.is_authenticated %}
+<h3>Hi {{ user.username }}!</h3>
+    {% if user.is_candidate %}
+        <h2>Hello Candidate!</h2>
+        <button><a href="/candidate/post/view/all">View Job Posts</a></button>
+    {% else %}
+        <h2>Recruiter Portal</h2>
+        <button><a href="recruiter/post/create">Create Post</a></button>
+        <button><a href="recruiter/post/view/all">View Posts</a></button>
+    {% endif %}
+    <hr>
+    <button><a href="accounts/logout">Log Out</a></button>
+{% else %}
+
+    <button><a href="accounts/login">Login</a></button>
+
+    <hr>
+    <div style="float: left; width: 48%; margin-top: 50px;">
+        <button><a href="/accounts/signup/candidate">Candidate Registration</a></button>
+    </div>
+    <div style="float: right; width: 48%; margin-top: 50px;">
+        <button><a href="/accounts/signup/recruiter">Recruiter Registration</a></button>
+    </div>
+
+{% endif %}
+
+
+</body>
+</html>
