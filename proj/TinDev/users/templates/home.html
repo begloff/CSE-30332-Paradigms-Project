@@ -15,12 +15,15 @@
     </div>
 
 {% if user.is_authenticated %}
+<h3>Hi {{ user.username }}!</h3>
     {% if user.is_candidate %}
         <h2>Hello Candidate!</h2>
+        <button><a href="">View Job Posts</a></button>
     {% else %}
         <h2>Recruiter Portal</h2>
+        <button><a href="post/create">Create Post</a></button>
+        <button><a href="post/view/all">View Posts</a></button>
     {% endif %}
-    <h3>Hi {{ user.username }}!</h3>
     <hr>
     <button><a href="accounts/logout">Log Out</a></button>
 {% else %}

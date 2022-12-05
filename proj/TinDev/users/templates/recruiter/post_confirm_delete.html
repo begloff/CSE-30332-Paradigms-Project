@@ -1,0 +1,19 @@
+{% load static %}<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h3>Delete {{post.position_title}} Post</h3>
+
+    <p>Are you sure you want to delete this post?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes</button>
+    </form>
+    <button><a href="/post/view/all">No</a></button>
+</body>
+</html>
