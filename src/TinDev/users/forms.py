@@ -4,6 +4,8 @@ from users.models import Candidate, Recruiter, User
 from django.db import transaction
 from django.forms.utils import ValidationError
 
+# form to create a candidate
+# used on the registration page
 class CandidateSignUpForm(UserCreationForm):
     name = forms.CharField(
         required=True,
@@ -55,6 +57,8 @@ class CandidateSignUpForm(UserCreationForm):
         return user
 
 
+# form to create a new recruiter
+# used on the registration page
 class RecruiterSignUpForm(UserCreationForm):
     name = forms.CharField(
         required=True,

@@ -222,19 +222,21 @@ def PostDetailView(request, pk):
 
 
 class CreateOffer(CreateView):
+    # uses built in create view to create a new form
     model = Offer
     fields = ('salary', 'duedate')
     template_name = 'recruiter/create_offer.html'
 
     def form_valid(self, form):
         offer = form.save(commit = False)
-        offer.candidate = get_object_or_404(Candidate, pk=self.request.GET.get('user_id'))
-        offer.post = get_object_or_404(Post, pk=self.request.GET.get('post_id'))
+        offer.candidate = get_object_or_404(Candidate, pk=self.request.GET.get('user_id')) # gets current user
+        offer.post = get_object_or_404(Post, pk=self.request.GET.get('post_id')) # gets the post the offer is linked to
         offer.save()
         messages.success(self.request, 'The offer was created successfully.')
         return redirect('/recruiter/post/view/all')
 
 class ViewOffers(ListView):
+    # shows all offers for a user
     model = Offer
     template_name = 'candidate/view_offers.html'
     context_object_name = 'offer_list'
@@ -246,32 +248,39 @@ class ViewOffers(ListView):
 import datetime
 
 def home(request):
+    # returns home page
+
+    # marks functions past their expiration or due date as inactive
     Post.objects.filter(expiration_date__lt=datetime.date.today()).update(is_active=False)
     Offer.objects.filter(duedate__lt=datetime.date.today()).update(is_active=False)
     return render(request, 'home.html')
 
 def addInterest(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    candidate = get_object_or_404(Candidate, pk=request.user)
+    # adds an interested user to a post
+    post = get_object_or_404(Post, pk=post_id) #gets post object from db
+    candidate = get_object_or_404(Candidate, pk=request.user) #gets current user from the session
     post.interests.add(candidate)
     post.save()
     return redirect("/candidate/post/view/all")
 
 def removeInterest(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    candidate = get_object_or_404(Candidate, pk=request.user)
+    # marks a user as uninterested in the post
+    post = get_object_or_404(Post, pk=post_id) #gets post from db
+    candidate = get_object_or_404(Candidate, pk=request.user) #gets user from the session
     post.interests.remove(candidate)
     post.save()
     return redirect("/candidate/post/view/all")
 
 def acceptOffer(request, offer_id):
-    offer = get_object_or_404(Offer, pk=offer_id)
-    offer.accepted = True
+    # marks an offer as accepted
+    offer = get_object_or_404(Offer, pk=offer_id) #gets the offer from the db
+    offer.accepted = True 
     offer.save()
     return redirect("/candidate/offer/view")
 
 def declineOffer(request, offer_id):
-    offer = get_object_or_404(Offer, pk=offer_id)
+    #mark offer as declined
+    offer = get_object_or_404(Offer, pk=offer_id) #get offer from db
     offer.declined = True
     offer.save()
     return redirect("/candidate/offer/view")
