@@ -39,7 +39,7 @@ class RecruiterSignUpView(CreateView):
 
 class CreatePostView(CreateView):
     model = Post
-    fields = ('position_title', 'description', 'job_type', 'job_city', 'job_state', 'skills', 'company', 'expiration_date', 'is_active')
+    fields = ('position_title', 'description', 'job_type', 'job_city', 'job_state', 'skills', 'company', 'expiration_date')
     template_name = 'recruiter/create_post.html'
 
     def form_valid(self, form):
@@ -155,7 +155,19 @@ class CreateOffer(CreateView):
         messages.success(self.request, 'The offer was created successfully.')
         return redirect('/recruiter/post/view/all')
 
+class ViewOffers(ListView):
+    model = Offer
+    template_name = 'candidate/view_offers.html'
+    context_object_name = 'offer_list'
+
+    def get_queryset(self, *args, **kwargs):
+        return Offer.objects.filter(candidate__user=self.request.user).order_by('-duedate') 
+
+
+import datetime
+
 def home(request):
+    Post.objects.filter(expiration_date__lt=datetime.date.today()).update(is_active=False)
     return render(request, 'home.html')
 
 def addInterest(request, post_id):
@@ -171,3 +183,4 @@ def removeInterest(request, post_id):
     post.interests.remove(candidate)
     post.save()
     return redirect("/candidate/post/view/all")
+

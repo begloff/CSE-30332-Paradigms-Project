@@ -17,7 +17,7 @@ from django.urls import path, include
 from django.contrib import admin
 from django.contrib.auth import logout
 
-from users.views import addInterest, removeInterest, CreateOffer, PostDetailView, KeywordSearchResults,LocationSearchResults, PostIndexViewInterest, CandidatePostIndexViewActive, CandidatePostIndexViewInactive, CandidatePostIndexViewAll, PostUpdateView, PostDeleteView, PostIndexViewAll, PostIndexViewActive, PostIndexViewInactive, CandidateSignUpView, RecruiterSignUpView, home, CreatePostView
+from users.views import addInterest, removeInterest, ViewOffers, CreateOffer, PostDetailView, KeywordSearchResults,LocationSearchResults, PostIndexViewInterest, CandidatePostIndexViewActive, CandidatePostIndexViewInactive, CandidatePostIndexViewAll, PostUpdateView, PostDeleteView, PostIndexViewAll, PostIndexViewActive, PostIndexViewInactive, CandidateSignUpView, RecruiterSignUpView, home, CreatePostView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -41,4 +41,5 @@ urlpatterns = [
     path('candidate/post/keyword/search', KeywordSearchResults.as_view(), name='search_results_keyword'),
     path('candidate/post/<int:post_id>/addinterest', addInterest, name='addInterest'), 
     path('candidate/post/<int:post_id>/removeInterest', removeInterest, name='removeInterest'), 
+    path('candidate/offer/view', ViewOffers.as_view(), name='view_offers'), 
 ]

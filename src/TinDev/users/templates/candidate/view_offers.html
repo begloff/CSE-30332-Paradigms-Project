@@ -1,0 +1,38 @@
+{% load static %}<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+
+    <h3>Job Offers</h3>
+    <button><a href="/">Return Home</a></button>
+
+    {% if offer_list %}
+
+        <ul>
+            {% for offer in offer_list %}
+
+            <li>
+                <!-- Link to detail view of post -->
+                <p>{{offer.post.position_title}}</p>
+                <p>Type: {{offer.post.job_type}}</p>
+                <p>Location: {{offer.post.job_city}}, {{offer.post.state}}</p>
+                <p>Description: {{offer.post.description}}</p>
+                <p>Company: {{offer.post.company}}</p>
+                <p>Salary: ${{offer.salary}}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p> No Posts Available</p>
+
+    {% endif %}
+
+    
+</body>
+</html>

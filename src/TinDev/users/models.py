@@ -41,7 +41,7 @@ class Post(models.Model):
     description = models.CharField(max_length=500,default='')
     company = models.CharField(max_length=100,default='')
     expiration_date = models.DateField(default=datetime.date.today)
-    is_active = models.BooleanField(default = False)
+    is_active = models.BooleanField(default = True)
 
     def __str__(self):
         return f'Post for {self.position_title} made by {self.user.username}'
@@ -51,3 +51,4 @@ class Offer(models.Model):
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
     salary = models.IntegerField(default=0)
     duedate = models.DateField(default=datetime.date.today)
+    is_active = models.BooleanField(default = True)
