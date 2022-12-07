@@ -17,7 +17,7 @@ from django.urls import path, include
 from django.contrib import admin
 from django.contrib.auth import logout
 
-from users.views import KeywordSearchResults,LocationSearchResults, CandidatePostIndexViewActive, CandidatePostIndexViewInactive, CandidatePostIndexViewAll, PostUpdateView, PostDeleteView, PostIndexViewAll, PostIndexViewActive, PostIndexViewInactive, CandidateSignUpView, RecruiterSignUpView, home, CreatePostView
+from users.views import addInterest, removeInterest, acceptOffer, declineOffer, ViewOffers, CandidatePostIndexViewIntrested, CreateOffer, PostDetailView, KeywordSearchResults,LocationSearchResults, PostIndexViewInterest, CandidatePostIndexViewActive, CandidatePostIndexViewInactive, CandidatePostIndexViewAll, PostUpdateView, PostDeleteView, PostIndexViewAll, PostIndexViewActive, PostIndexViewInactive, CandidateSignUpView, RecruiterSignUpView, home, CreatePostView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,11 +29,21 @@ urlpatterns = [
     path('recruiter/post/view/all', PostIndexViewAll.as_view(), name='recruiter_post_view_all'),
     path('recruiter/post/view/active', PostIndexViewActive.as_view(), name='recruiter_post_view_active'),
     path('recruiter/post/view/inactive', PostIndexViewInactive.as_view(), name='recruiter_post_view_inactive'),
+    path('recruiter/post/view/interest', PostIndexViewInterest.as_view(), name='recruiter_post_view_interest'),
+    path('recruiter/post/view/<int:pk>', PostDetailView, name='recruiter_post_detail_view'),
     path('recruiter/post/update/<int:pk>', PostUpdateView.as_view(), name='recruiter_post_update'),
     path('recruiter/post/delete/<int:pk>', PostDeleteView.as_view(), name='recruiter_post_delete'),
+    path('recruiter/post/offer/create', CreateOffer.as_view(), name='create_offer'),
     path('candidate/post/view/all', CandidatePostIndexViewAll.as_view(), name='candidate_post_view_all'),
     path('candidate/post/view/active', CandidatePostIndexViewActive.as_view(), name='candidate_post_view_active'),
     path('candidate/post/view/inactive', CandidatePostIndexViewInactive.as_view(), name='candidate_post_view_inactive'),
     path('candidate/post/location/search', LocationSearchResults.as_view(), name='search_results_location'),
     path('candidate/post/keyword/search', KeywordSearchResults.as_view(), name='search_results_keyword'),
+    path('candidate/post/<int:post_id>/addinterest', addInterest, name='addInterest'), 
+    path('candidate/post/<int:post_id>/removeInterest', removeInterest, name='removeInterest'), 
+    path('candidate/offer/view', ViewOffers.as_view(), name='view_offers'),
+    path('candidate/post/view/intrested', CandidatePostIndexViewIntrested.as_view(), name='candidate_post_view_intrested'),
+    path('candidate/offer/accept/<int:offer_id>', acceptOffer, name='accept_offer'), 
+    path('candidate/offer/decline/<int:offer_id>', declineOffer, name='decline_offer'), 
+
 ]

@@ -24,11 +24,11 @@
                 <p>Job Type: {{ post.job_type }}</p>
                 {% if post.is_active %}
                     <p>Status: Active</p>
+                    <button style="background-color: green"><a href="{% url 'addInterest' post.id %}">Interested</a></button>
+                    <button style="background-color: red"><a href="{% url 'removeInterest' post.id %}">Not Interested</a></button>
                 {% else %}
                     <p>Status: Not Active</p>
                 {% endif %}
-                <button style="background-color: green"><a href="/">Interested</a></button>
-                <button style="background-color: red"><a href="/">Not Interested</a></button>
             </li>
             {% endfor %}
         </ul>
@@ -40,6 +40,7 @@
     <button style="margin-bottom: 30px;"><a href="/candidate/post/view/all">All Posts</a></button>
     <button style="margin-bottom: 30px;"><a href="/candidate/post/view/active">Active Posts</a></button>
     <button style="margin-bottom: 30px;"><a href="/candidate/post/view/inactive">Inactive Posts</a></button>
+    <button style="margin-bottom: 30px;"><a href="/candidate/post/view/intrested">Interested Posts</a></button>
 
     <form method="get" action="{% url 'search_results_location' %}">
         <input type="text" name="q" placeholder="Location Search">
@@ -50,7 +51,6 @@
     </form>
 
 
-    <button><a>Interested Posts</a></button>
     
 </body>
 </html>

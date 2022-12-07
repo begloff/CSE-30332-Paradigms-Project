@@ -4,18 +4,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
 </head>
 <body>
-    <h3>Delete {{post.position_title}} Post</h3>
 
-    <button><a href="/">Return Home</a></button>
+    <h2>Make an Offer</h2>
 
-    <p>Are you sure you want to delete this post?</p>
+    <button><a href="/">Go Home</a></button>
+
     <form method="post">
         {% csrf_token %}
-        <button type="submit">Yes</button>
+        {% for field in form %}
+          <div style="margin-top: 20px;">
+          {{field.label}}
+          {{field}}
+          
+          </div>
+        {% endfor %}
+
+        <button type="submit">Make Offer</button>
+
     </form>
-    <button><a href="/recruiter/post/view/all">No</a></button>
 </body>
 </html>
