@@ -14,6 +14,7 @@
         <img src=" {% static 'img/TinDev.jpg' %}" alt="">
     </div>
 
+<!-- display/buttons dependent on if user is a candidate or recruiter -->
 {% if user.is_authenticated %}
 <h3>Hi {{ user.username }}!</h3>
     {% if user.is_candidate %}

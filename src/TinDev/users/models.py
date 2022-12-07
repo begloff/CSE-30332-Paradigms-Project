@@ -6,6 +6,7 @@ class User(AbstractUser):
     is_candidate = models.BooleanField(default = False)
     is_recruiter = models.BooleanField(default = False)
 
+# Canditade uses User as foreign key
 class Candidate(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     name = models.CharField(max_length=200, default='')
@@ -20,6 +21,7 @@ class Candidate(models.Model):
     def __str__(self):
         return self.user.username
 
+# Recruiter uses User as foreign key
 class Recruiter(models.Model):
     name = models.CharField(max_length=200,default='')
     company = models.CharField(max_length=50,default='')
@@ -29,7 +31,7 @@ class Recruiter(models.Model):
     def __str__(self):
         return self.user.username
 
-# Include User? May Mess with creating and editing
+# Post implements User and contains attributes
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     interests = models.ManyToManyField(Candidate)
@@ -46,6 +48,7 @@ class Post(models.Model):
     def __str__(self):
         return f'Post for {self.position_title} made by {self.user.username}'
 
+# Offer associates a post with a candidate who's being offered
 class Offer(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
