@@ -5,6 +5,7 @@ from .forms import CandidateSignUpForm, RecruiterSignUpForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.db.models import Q, Count
+from django.http import HttpResponse
 
 
 # Create your views here.
@@ -137,10 +138,36 @@ class PostIndexViewInterest(ListView):
     def get_queryset(self, *args, **kwargs):
         return Post.objects.annotate(num_candidates=Count('interests')).filter(user=self.request.user, num_candidates__gt=0).order_by('-is_active','-expiration_date')
 
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'recruiter/post_details.html'
-    context_object_name = 'post'
+def PostDetailView(request, pk):
+
+    post = get_object_or_404(Post, pk=pk)
+    matching = {}
+
+    #Loop through interested candidates in post and get object
+    for candidate in post.interests.all():
+        total = 0
+        #Scan skills in candidates and job desc and match based on that
+        for s1 in candidate.skills.split(", "):
+            for s2 in post.skills.split(", "):
+                if( s1 == s2 ):
+                    total += 1
+
+        #Make dictionary storing that
+        x = (total / 5) * 100
+        if total > 5:
+            x = 100
+        matching[candidate] = x
+    #Rough Scale: 5 matched skills = 100%
+
+
+
+    context = {}
+    context['post'] = post
+    context['matching'] = matching
+
+    return render(request, 'recruiter/post_details.html', context)
+
+
 
 class CreateOffer(CreateView):
     model = Offer
@@ -183,4 +210,3 @@ def removeInterest(request, post_id):
     post.interests.remove(candidate)
     post.save()
     return redirect("/candidate/post/view/all")
-
