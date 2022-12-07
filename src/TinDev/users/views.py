@@ -11,55 +11,68 @@ from django.http import HttpResponse
 # Create your views here.
 
 class CandidateSignUpView(CreateView):
+
+    #Candidate SignUp View returns form for creating new candidate
+
     model = User
-    form_class = CandidateSignUpForm
+    form_class = CandidateSignUpForm #Uses form from forms.py
     template_name = 'registration/signup_form.html'
 
     def get_context_data(self, **kwargs):
         kwargs['user_type'] = 'candidate'
         return super().get_context_data(**kwargs)
 
-    def form_valid(self, form):
+    def form_valid(self, form): #Method that runs on form submit
         user = form.save()
         login(self.request, user)
-        return redirect('/')
+        return redirect('/') #Go to home page logged in
 
 class RecruiterSignUpView(CreateView):
-    model = User
-    form_class = RecruiterSignUpForm
-    template_name = 'registration/signup_form.html'
+    #SignUp views for recruiter
 
-    def get_context_data(self, **kwargs):
+    model = User
+    form_class = RecruiterSignUpForm #Uses form from forms.py
+    template_name = 'registration/signup_form.html' #Template to reference
+
+    def get_context_data(self, **kwargs): #Specifies user type as recruiter
         kwargs['user_type'] = 'recruiter'
         return super().get_context_data(**kwargs)
 
-    def form_valid(self, form):
+    def form_valid(self, form): #Method that runs on form submit
         user = form.save()
         login(self.request, user)
         return redirect('/')
 
 class CreatePostView(CreateView):
+
+    #Creates new post using the given fields for the form
+
     model = Post
     fields = ('position_title', 'description', 'job_type', 'job_city', 'job_state', 'skills', 'company', 'expiration_date')
     template_name = 'recruiter/create_post.html'
 
-    def form_valid(self, form):
+    def form_valid(self, form): #Runs on form submit
         post = form.save(commit = False)
         post.user = self.request.user
         post.save()
-        messages.success(self.request, 'The post was created successfully.')
         return redirect('/recruiter/post/view/all')
 
 
 class PostIndexViewAll(ListView):
+
+    #Lists all of posts for candidate
+
     model = Post
     template_name = 'recruiter/view_posts.html'
     context_object_name = 'latest_post_list'
 
     def get_queryset(self, *args, **kwargs):
-        return Post.objects.annotate(num_interested=Count('interests')).filter(user=self.request.user).order_by('-is_active','-expiration_date')
+        return Post.objects.annotate(num_interested=Count('interests')).filter(user=self.request.user).order_by('-is_active','-expiration_date') #Orders by active posts, then decending expr date
 
 class PostIndexViewActive(ListView):
+
+    #Same as PostIndexViewAll but just active posts
+
     model = Post
     template_name = 'recruiter/view_posts.html'
     context_object_name = 'latest_post_list'
@@ -68,6 +81,9 @@ class PostIndexViewActive(ListView):
         return Post.objects.annotate(num_interested=Count('interests')).filter(user=self.request.user, is_active=True).order_by('-is_active','-expiration_date')
 
 class PostIndexViewInactive(ListView):
+
+    # Same as PostIndexViewAll just inactive posts though
+
     model = Post
     template_name = 'recruiter/view_posts.html'
     context_object_name = 'latest_post_list'
@@ -76,27 +92,39 @@ class PostIndexViewInactive(ListView):
         return Post.objects.annotate(num_interested=Count('interests')).filter(user=self.request.user, is_active=False).order_by('-is_active','-expiration_date')
 
 class PostUpdateView(UpdateView):
+
+    #View for updating post details
+
     model = Post
     template_name = "recruiter/post-update.html"
-    fields = ('position_title', 'description', 'job_type', 'job_city', 'job_state', 'skills', 'company', 'expiration_date', 'is_active')
+    fields = ('position_title', 'description', 'job_type', 'job_city', 'job_state', 'skills', 'company', 'expiration_date', 'is_active') #Specifies form fields
     
-    success_url = "/recruiter/post/view/all"
+    success_url = "/recruiter/post/view/all" #On success redirect to here
 
 class PostDeleteView(DeleteView):
+
+    #Deletes given post (Deletion handled by DeleteView)
+
     model = Post
     template_name = "recruiter/post_confirm_delete.html"
     success_url = "/recruiter/post/view/all"
     context_object_name = 'post'
 
 class CandidatePostIndexViewAll(ListView):
+
+    #Filters candidate posts based on all Indexes
+
     model = Post
     template_name = 'candidate/view_posts.html'
     context_object_name = 'latest_post_list'
 
-    def get_queryset(self, *args, **kwargs):
+    def get_queryset(self, *args, **kwargs): #Ran whenever getting data for list view
         return Post.objects.order_by('-is_active','-expiration_date')
 
 class CandidatePostIndexViewActive(ListView):
+
+    #Same as CandidatePostIndexViewAll but with only inactive listings
+
     model = Post
     template_name = 'candidate/view_posts.html'
     context_object_name = 'latest_post_list'
@@ -105,6 +133,9 @@ class CandidatePostIndexViewActive(ListView):
         return Post.objects.filter(is_active=True).order_by('-is_active','-expiration_date')
 
 class CandidatePostIndexViewInactive(ListView):
+
+    #Same as CandidatePostIndexViewAll but only inactive listings
+
     model = Post
     template_name = 'candidate/view_posts.html'
     context_object_name = 'latest_post_list'
@@ -113,6 +144,9 @@ class CandidatePostIndexViewInactive(ListView):
         return Post.objects.filter(is_active=False).order_by('-is_active','-expiration_date')
 
 class CandidatePostIndexViewIntrested(ListView):
+
+    #Same as CandidatePostIndexViewAll but for posts that user is interested in
+
     model = Post
     template_name = 'candidate/view_posts.html'
     context_object_name = 'latest_post_list'
@@ -122,24 +156,33 @@ class CandidatePostIndexViewIntrested(ListView):
 
 
 class LocationSearchResults(ListView):
+
+    #Search jobs based on city and state fields
+
     model = Post
     template_name = "candidate/search_results.html"
     context_object_name = 'latest_post_list'
 
     def get_queryset(self, *args, **kwargs):
-        query = self.request.GET.get("q")
-        return Post.objects.filter(Q(job_city__icontains=query) | Q(job_state__icontains=query))
+        query = self.request.GET.get("q") #Get from url the specified query
+        return Post.objects.filter(Q(job_city__icontains=query) | Q(job_state__icontains=query)) #Return objects that contain queried location
 
 class KeywordSearchResults(ListView):
+
+    #Similar to LocationSearchResults
+
     model = Post
     template_name = "candidate/search_results.html"
     context_object_name = 'latest_post_list'
 
-    def get_queryset(self, *args, **kwargs):
+    def get_queryset(self, *args, **kwargs): 
         query = self.request.GET.get("q")
-        return Post.objects.filter(Q(description__icontains=query))
+        return Post.objects.filter(Q(description__icontains=query)) #Searches job desc for said query
 
 class PostIndexViewInterest(ListView):
+
+    #Checks number of interested users for each post and filters, accepting only greater than 0
+
     model = Post
     template_name = 'recruiter/view_posts.html'
     context_object_name = 'latest_post_list'
