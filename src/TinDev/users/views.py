@@ -57,7 +57,7 @@ class PostIndexViewAll(ListView):
     context_object_name = 'latest_post_list'
 
     def get_queryset(self, *args, **kwargs):
-        return Post.objects.filter(user=self.request.user).order_by('-is_active','-expiration_date')
+        return Post.objects.annotate(num_interested=Count('interests')).filter(user=self.request.user).order_by('-is_active','-expiration_date')
 
 class PostIndexViewActive(ListView):
     model = Post
@@ -65,7 +65,7 @@ class PostIndexViewActive(ListView):
     context_object_name = 'latest_post_list'
 
     def get_queryset(self, *args, **kwargs):
-        return Post.objects.filter(user=self.request.user, is_active=True).order_by('-is_active','-expiration_date')
+        return Post.objects.annotate(num_interested=Count('interests')).filter(user=self.request.user, is_active=True).order_by('-is_active','-expiration_date')
 
 class PostIndexViewInactive(ListView):
     model = Post
@@ -73,7 +73,7 @@ class PostIndexViewInactive(ListView):
     context_object_name = 'latest_post_list'
 
     def get_queryset(self, *args, **kwargs):
-        return Post.objects.filter(user=self.request.user, is_active=False).order_by('-is_active','-expiration_date')
+        return Post.objects.annotate(num_interested=Count('interests')).filter(user=self.request.user, is_active=False).order_by('-is_active','-expiration_date')
 
 class PostUpdateView(UpdateView):
     model = Post
@@ -85,7 +85,7 @@ class PostUpdateView(UpdateView):
 class PostDeleteView(DeleteView):
     model = Post
     template_name = "recruiter/post_confirm_delete.html"
-    success_url = "recruiter/post/view/all"
+    success_url = "/recruiter/post/view/all"
     context_object_name = 'post'
 
 class CandidatePostIndexViewAll(ListView):
@@ -112,6 +112,15 @@ class CandidatePostIndexViewInactive(ListView):
     def get_queryset(self, *args, **kwargs):
         return Post.objects.filter(is_active=False).order_by('-is_active','-expiration_date')
 
+class CandidatePostIndexViewIntrested(ListView):
+    model = Post
+    template_name = 'candidate/view_posts.html'
+    context_object_name = 'latest_post_list'
+
+    def get_queryset(self, *args, **kwargs):
+        return Post.objects.filter(interests__user=self.request.user).order_by('-is_active','-expiration_date')
+
+
 class LocationSearchResults(ListView):
     model = Post
     template_name = "candidate/search_results.html"
@@ -136,7 +145,7 @@ class PostIndexViewInterest(ListView):
     context_object_name = 'latest_post_list'
 
     def get_queryset(self, *args, **kwargs):
-        return Post.objects.annotate(num_candidates=Count('interests')).filter(user=self.request.user, num_candidates__gt=0).order_by('-is_active','-expiration_date')
+        return Post.objects.annotate(num_interested=Count('interests')).filter(user=self.request.user, num_interested__gt=0).order_by('-is_active','-expiration_date')
 
 def PostDetailView(request, pk):
 
@@ -195,6 +204,7 @@ import datetime
 
 def home(request):
     Post.objects.filter(expiration_date__lt=datetime.date.today()).update(is_active=False)
+    Offer.objects.filter(duedate__lt=datetime.date.today()).update(is_active=False)
     return render(request, 'home.html')
 
 def addInterest(request, post_id):
@@ -210,3 +220,15 @@ def removeInterest(request, post_id):
     post.interests.remove(candidate)
     post.save()
     return redirect("/candidate/post/view/all")
+
+def acceptOffer(request, offer_id):
+    offer = get_object_or_404(Offer, pk=offer_id)
+    offer.accepted = True
+    offer.save()
+    return redirect("/candidate/offer/view")
+
+def declineOffer(request, offer_id):
+    offer = get_object_or_404(Offer, pk=offer_id)
+    offer.declined = True
+    offer.save()
+    return redirect("/candidate/offer/view")

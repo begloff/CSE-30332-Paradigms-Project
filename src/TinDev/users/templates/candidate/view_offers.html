@@ -21,10 +21,25 @@
                 <!-- Link to detail view of post -->
                 <p>{{offer.post.position_title}}</p>
                 <p>Type: {{offer.post.job_type}}</p>
-                <p>Location: {{offer.post.job_city}}, {{offer.post.state}}</p>
+                <p>Location: {{offer.post.job_city}}, {{offer.post.job_state}}</p>
                 <p>Description: {{offer.post.description}}</p>
                 <p>Company: {{offer.post.company}}</p>
                 <p>Salary: ${{offer.salary}}</p>
+                {% if offer.accepted %}
+                    <p>Offer accepted!</p> 
+                {% elif offer.declined %}
+                    <p>Offer declined.</p>
+                {% else %}
+                    {% if offer.is_active %}
+                        <p>Due date: {{offer.duedate}}</p>
+                        <div>
+                            <button style="background-color: green"><a href="{% url 'accept_offer' offer.id %}">Accept Offer</a></button>
+                            <button style="background-color: red"><a href="{% url 'decline_offer' offer.id %}">Decline Offer</a></button>
+                        </div>
+                    {% else %}
+                        <p>Expired on: {{offer.duedate}}</p>
+                    {% endif %}
+                {% endif %}
             </li>
             {% endfor %}
         </ul>

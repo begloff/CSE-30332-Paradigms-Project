@@ -52,3 +52,5 @@ class Offer(models.Model):
     salary = models.IntegerField(default=0)
     duedate = models.DateField(default=datetime.date.today)
     is_active = models.BooleanField(default = True)
+    accepted = models.BooleanField(default = False)
+    declined = models.BooleanField(default = False)
